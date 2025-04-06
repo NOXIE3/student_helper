@@ -1,0 +1,199 @@
+{% load calendar_filters %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Calendar</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f0f8ff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: #0066cc;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            z-index: 1000;
+        }
+
+        h1 {
+            margin: 0;
+        }
+
+        .calendar-container {
+            margin-top: 80px;
+            padding: 20px;
+            overflow-y: auto;
+            flex-grow: 1;
+        }
+
+        .calendar-header {
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .calendar table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: center;
+        }
+
+        .calendar th, .calendar td {
+            padding: 10px;
+            border: 1px solid #ccc;
+            cursor: pointer;
+        }
+
+        .calendar th {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .calendar td {
+            width: 40px;
+            height: 40px;
+            vertical-align: top;
+        }
+
+        .calendar td:hover {
+            background-color: #f0f0f0;
+        }
+
+        .task {
+            background-color: #ffeb3b;
+            color: black;
+            font-size: 12px;
+            padding: 3px;
+            margin-top: 5px;
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .back-link a {
+            text-decoration: none;
+            color: #007bff;
+        }
+
+        .today {
+            background-color: #ffeb3b; /* Highlight today’s date */
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Fixed Header -->
+    <div class="header">
+        <h1>Task Calendar</h1>
+    </div>
+
+    <!-- Calendar Container -->
+    <div class="calendar-container">
+        <!-- Current Month and Year Header -->
+        <div class="calendar-header">
+            <p id="monthYear"></p>  <!-- Current month and year -->
+        </div>
+
+        <!-- Calendar Table -->
+        <div class="calendar">
+            <table id="calendarTable">
+                <thead>
+                    <tr>
+                        <th>Sun</th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Days will be inserted here by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Back Link -->
+    <div class="back-link">
+        <a href="/">← Back to Home</a>
+    </div>
+
+    <script>
+        // Function to generate the calendar for a given month and year
+        function generateCalendar(month, year) {
+            const calendarTable = document.getElementById("calendarTable").getElementsByTagName('tbody')[0];
+            const monthYearDisplay = document.getElementById("monthYear");
+
+            // Set the current month and year
+            const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            monthYearDisplay.innerHTML = months[month] + " " + year;
+
+            // Clear the existing table body
+            calendarTable.innerHTML = '';
+
+            // Get the full month calendar (weeks as rows, days as columns)
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            const totalDaysInMonth = lastDay.getDate();
+            const startingDay = firstDay.getDay();
+
+            // Generate the calendar grid
+            let day = 1;
+            let week = [];
+            for (let i = 0; i < 6; i++) {  // Maximum 6 rows
+                week = [];
+                for (let j = 0; j < 7; j++) {  // 7 days in a week
+                    if (i === 0 && j < startingDay) {
+                        week.push(null);  // Empty cell for days before the first of the month
+                    } else if (day > totalDaysInMonth) {
+                        week.push(null);  // Empty cell after the last day of the month
+                    } else {
+                        week.push(day);
+                        day++;
+                    }
+                }
+                // Add the week to the calendar table
+                const row = calendarTable.insertRow();
+                for (let i = 0; i < 7; i++) {
+                    const cell = row.insertCell(i);
+                    const dayNum = week[i];
+                    if (dayNum) {
+                        cell.innerHTML = `<div>${dayNum}</div>`;
+                        // Add the "today" class if it's today's date
+                        const today = new Date();
+                        if (today.getDate() === dayNum && today.getMonth() === month && today.getFullYear() === year) {
+                            cell.classList.add("today");
+                        }
+                    } else {
+                        cell.innerHTML = "<div>&nbsp;</div>";  // Empty space for non-month days
+                    }
+                }
+            }
+        }
+
+        // Get current date
+        const today = new Date();
+        const currentMonth = today.getMonth();
+        const currentYear = today.getFullYear();
+
+        // Generate the calendar for the current month and year
+        generateCalendar(currentMonth, currentYear);
+    </script>
+
+</body>
+</html>
+
+
+

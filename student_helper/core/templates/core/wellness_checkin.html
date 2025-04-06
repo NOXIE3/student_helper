@@ -1,0 +1,118 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wellness Check-in</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f4f9ff;
+            color: #333;
+            text-align: center;
+            padding: 60px;
+            margin: 0;
+            box-sizing: border-box;
+        }
+
+        .header {
+            font-size: 1.5em;
+            background-color: #0066cc;
+            color: white;
+            padding: 10px 0;
+            margin-bottom: 40px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: #0066cc;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            z-index: 1000;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            color: #0066cc;
+        }
+
+        p {
+            font-size: 1.2em;
+            margin-bottom: 30px;
+        }
+
+        form {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: left;
+        }
+
+        input[type="text"], input[type="number"], textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 1em;
+        }
+
+        input[type="submit"] {
+            background-color: #007bff;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.2em;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        .back-link {
+            margin-top: 20px;
+        }
+
+        .back-link a {
+            text-decoration: none;
+            color: #007bff;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        🎓 Student Helper
+    </div>
+
+    <h1>Wellness Check-in</h1>
+    <p>Take a moment to reflect on how you're feeling today.</p>
+
+    <form action="{% url 'wellness_checkin' %}" method="POST">
+        {% csrf_token %}
+        <label for="mood">How are you feeling today?</label>
+        <input type="text" id="mood" name="mood" placeholder="Describe your mood" required>
+
+        <label for="energy">How is your energy level today?</label>
+        <input type="number" id="energy" name="energy" min="1" max="10" placeholder="Rate from 1 (low) to 10 (high)" required>
+
+        <label for="comments">Additional Comments:</label>
+        <textarea id="comments" name="comments" rows="4" placeholder="Share any thoughts or concerns"></textarea>
+
+        <input type="submit" value="Submit Check-in">
+    </form>
+
+    <div class="back-link">
+        <a href="/">← Back to Home</a>
+    </div>
+
+</body>
+</html>

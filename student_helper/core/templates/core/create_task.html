@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Task</title>
+    <style>
+        /* General Body Styles */
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f0f8ff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+       
+
+        .header h1 {
+            font-size: 2.5em;
+            margin: 0;
+        }
+
+        /* Main Content Area */
+        .content {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 80px 20px 20px;
+            text-align: center;
+        }
+
+        /* Form Container */
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 15px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 450px;
+        }
+
+        h2 {
+            color: #007bff;
+            margin-bottom: 25px;
+        }
+
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+
+        button {
+            background-color: #28a745;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        a {
+            display: block;
+            margin-top: 15px;
+            text-align: center;
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        /* Calendar Styles */
+        .calendar-container {
+            position: relative;
+        }
+
+        .calendar {
+            display: none;
+            position: absolute;
+            top: 10px;
+            right: 0;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 10px;
+            font-size: 14px;
+            width: 270px;
+        }
+
+        .calendar table {
+            width: 100%;
+            text-align: center;
+            border-collapse: collapse;
+        }
+
+        .calendar th, .calendar td {
+            padding: 5px;
+            cursor: pointer;
+        }
+
+        .calendar th {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .calendar td:hover {
+            background-color: #f0f0f0;
+        }
+
+        .calendar td.selected {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .calendar td.task {
+            background-color: #ffeb3b;
+            color: black;
+        }
+
+        .calendar select {
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 5px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+
+    
+
+    <!-- Main Content Area -->
+    <div class="content">
+        <div class="container">
+            <h2>Create a New Task</h2>
+            <form id="task-form">
+                <input type="text" name="title" placeholder="Task Title" required>
+                <textarea name="description" placeholder="Task Description" rows="4"></textarea>
+                
+                <!-- Date picker input -->
+                <div class="calendar-container">
+                    <input type="text" id="task-date" placeholder="Select Date (DD/MM/YYYY)" readonly>
+                    <div class="calendar" id="calendar"></div>
+                </div>
+                
+                <button type="submit">Save Task</button>
+            </form>
+            <a href="/">← Back to Home</a>
+        </div>
+    </div>
+
+    <div id="task-info" style="text-align:center; color: green;"></div>
+
+    <script>
+        const dateInput = document.getElementById('task-date');
+        const calendarDiv = document.getElementById('calendar');
+        const taskForm = document.getElementById('task-form');
+        const taskInfo = document.getElementById('task-info');
+        const taskData = {}; // Store task data by date
+
+        const currentDate = new Date();
+        let selectedDay = currentDate.getDate();
+        let selectedMonth = currentDate.getMonth();
+        let selectedYear = currentDate.getFullYear();
+
+        // Generate a simple calendar for the current month and year
+        function generateCalendar() {
+            let firstDay = new Date(selectedYear, selectedMonth).getDay();
+            let daysInMonth = new Date(selectedYear, selectedMonth + 1, 0).getDate();
+
+            let calendarHTML = `
+                <select id="month-select">
+                    ${['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+                        .map((month, index) => 
+                            `<option value="${index}" ${index === selectedMonth ? 'selected' : ''}>${month}</option>`).join('')}
+                </select>
+                <select id="year-select">
+                    ${[...Array(21)].map((_, i) => {
+                        const yearOption = currentDate.getFullYear() + i;
+                        return `<option value="${yearOption}" ${yearOption === selectedYear ? 'selected' : ''}>${yearOption}</option>`;
+                    }).join('')}
+                </select>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Sun</th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>`;
+            
+            // Add empty cells before the first day of the month
+            for (let i = 0; i < firstDay; i++) {
+                calendarHTML += '<td></td>';
+            }
+
+            // Add the days of the month
+            for (let day = 1; day <= daysInMonth; day++) {
+                if ((firstDay + day - 1) % 7 === 0 && day !== 1) {
+                    calendarHTML += '</tr><tr>';
+                }
+                const taskDate = `${day < 10 ? '0' : ''}${day}/${selectedMonth + 1 < 10 ? '0' : ''}${selectedMonth + 1}/${selectedYear}`;
+                const taskClass = taskData[taskDate] ? 'task' : '';
+                calendarHTML += `<td class="calendar-day ${taskClass}" data-day="${day}">${day}</td>`;
+            }
+
+            // Close the table tags
+            calendarHTML += '</tr></tbody></table>';
+            calendarDiv.innerHTML = calendarHTML;
+        }
+
+        // Show the calendar when the input is clicked
+        dateInput.addEventListener('click', () => {
+            calendarDiv.style.display = 'block';
+            generateCalendar();
+        });
+
+        // Close the calendar when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.calendar-container')) {
+                calendarDiv.style.display = 'none';
+            }
+        });
+
+        // Select a day from the calendar
+        calendarDiv.addEventListener('click', (e) => {
+            if (e.target.classList.contains('calendar-day')) {
+                selectedDay = e.target.getAttribute('data-day');
+                dateInput.value = `${selectedDay < 10 ? '0' : ''}${selectedDay}/${selectedMonth + 1 < 10 ? '0' : ''}${selectedMonth + 1}/${selectedYear}`;
+                taskInfo.textContent = '';
+                calendarDiv.style.display = 'none';
+            }
+        });
+
+        // Handle month and year changes
+        document.addEventListener('change', (e) => {
+            if (e.target.id === 'month-select') {
+                selectedMonth = parseInt(e.target.value);
+            } else if (e.target.id === 'year-select') {
+                selectedYear = parseInt(e.target.value);
+            }
+            generateCalendar();
+        });
+
+        // Save task
+        taskForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const taskTitle = taskForm.title.value;
+            const taskDescription = taskForm.description.value;
+            const taskDate = dateInput.value;
+
+            if (taskDate) {
+                taskData[taskDate] = {
+                    title: taskTitle,
+                    description: taskDescription
+                };
+
+                // Show the task saved message
+                taskInfo.textContent = `Task saved for ${taskDate}.`;
+
+                // Update the calendar to show task
+                generateCalendar();
+
+                // Clear the form
+                taskForm.reset();
+                dateInput.value = '';
+            }
+        });
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,119 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help - Student Helper</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f4f8;
+            color: #333;
+            text-align: left;
+            padding: 50px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        h2 {
+            color: #007bff;
+        }
+
+        ul {
+            margin-left: 20px;
+        }
+
+        p {
+            line-height: 1.6;
+        }
+
+        a {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        a:hover {
+            background: #0056b3;
+        }
+
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Help Page</h1>
+
+    <div class="section">
+        <h2>Introduction</h2>
+        <p>Welcome to the Student Helper app! This app helps you manage your tasks, assignments, and deadlines easily. Below are the instructions on how to use the calendar and task management features.</p>
+    </div>
+
+    <div class="section">
+        <h2>How to View Tasks</h2>
+        <p>The calendar displays tasks for the current month. You can view your tasks by simply navigating through the calendar. Tasks will appear on the respective dates. Click on a date to view more details about the task.</p>
+    </div>
+
+    <div class="section">
+        <h2>How to Add a Task</h2>
+        <ul>
+            <li>Click on the date where you want to add a task.</li>
+            <li>Fill in the task details, such as title and due date.</li>
+            <li>Click the "Save" button to add the task to the calendar.</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>How to Edit a Task</h2>
+        <ul>
+            <li>Click on the task you want to edit.</li>
+            <li>Edit the details of the task as needed.</li>
+            <li>Click "Save" to update the task.</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>How to Delete a Task</h2>
+        <ul>
+            <li>Click on the task you want to delete.</li>
+            <li>Click the "Delete" button to remove the task from the calendar.</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>Frequently Asked Questions (FAQ)</h2>
+        <ul>
+            <li><strong>Q: How can I view tasks for previous months?</strong><br> A: You can navigate to previous months using the 'Previous' and 'Next' buttons located at the top of the calendar.</li>
+            <li><strong>Q: How do I get reminders for my tasks?</strong><br> A: Set up reminders by checking the 'Reminder' box while adding or editing a task. You'll receive notifications for upcoming tasks.</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>Contact Support</h2>
+        <p>If you need further assistance, please feel free to contact our support team at <a href="mailto:support@example.com">support@example.com</a>.</p>
+    </div>
+
+    <div class="back-link">
+        <a href="{% url 'home' %}">← Back to Home</a>
+    </div>
+
+</body>
+</html>
